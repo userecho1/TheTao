@@ -1,9 +1,19 @@
 # TheTao
 
 TheTao 只保留最小执行骨架：**Dao + Shu**。
-治理单一来源：`AGENTS.md`（Dao）；其余文件仅做加载与执行引用。
+治理文本 canonical 目录：`.copilot\instructions\`（Dao + Shu 原文）。
 
-## 入口
-- `AGENTS.md`：Dao（硬约束）
-- `.github\instructions\world-rules.instructions.md`：Shu（动态规则）
-- `.github\copilot-instructions.md`：加载顺序与执行约束（引用 Dao/Shu）
+## 单一入口策略
+- 唯一 Copilot 入口：`.copilot\copilot-instructions.md`
+- 入口只负责按顺序加载 canonical 文本：
+  1. `.copilot\instructions\dao.instructions.md`
+  2. `.copilot\instructions\shu.instructions.md`
+
+## 关键文件
+- `.copilot\instructions\dao.instructions.md`：Dao（硬约束）
+- `.copilot\instructions\shu.instructions.md`：Shu（动态规则）
+- `.copilot\copilot-instructions.md`：唯一 Copilot 入口
+
+## 校验原则
+- 仅以 canonical 路径为准：`.copilot\instructions\` + `.copilot\copilot-instructions.md`。
+- 保持最小、可执行、可验证。

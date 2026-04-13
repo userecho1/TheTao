@@ -3,13 +3,16 @@ $ErrorActionPreference = 'Stop'
 
 $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path
 
+$canonicalInstructionFiles = @(
+  '.copilot\instructions\dao.instructions.md',
+  '.copilot\instructions\shu.instructions.md'
+)
+
 $requiredFiles = @(
   'README.md',
-  'AGENTS.md',
-  '.github\copilot-instructions.md',
-  '.github\instructions\world-rules.instructions.md',
+  '.copilot\copilot-instructions.md',
   'scripts\copilot\validate-artifacts.ps1'
-)
+) + $canonicalInstructionFiles
 
 $errors = New-Object System.Collections.Generic.List[string]
 
@@ -26,6 +29,19 @@ foreach ($relativePath in $requiredFiles) {
   }
 }
 
+$specsPath = Join-Path $repoRoot 'specs'
+if (Test-Path -LiteralPath $specsPath -PathType Container) {
+  $errors.Add("Forbidden directory exists: specs")
+}
+
+if ($errors.Count -gt 0) {
+  Write-Host 'Validation FAILED:' -ForegroundColor Red
+  foreach ($err in $errors) {
+    Write-Host " - $err" -ForegroundColor Red
+  }
+  exit 1
+}
+
 function Assert-Contains {
   param(
     [Parameter(Mandatory = $true)][string]$Text,
@@ -38,28 +54,43 @@ function Assert-Contains {
   }
 }
 
+function Assert-NotContains {
+  param(
+    [Parameter(Mandatory = $true)][string]$Text,
+    [Parameter(Mandatory = $true)][string]$Pattern,
+    [Parameter(Mandatory = $true)][string]$ErrorMessage
+  )
+
+  if ([Regex]::IsMatch($Text, $Pattern, [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)) {
+    $errors.Add($ErrorMessage)
+  }
+}
+
 $readmeText = Get-Content -LiteralPath (Join-Path $repoRoot 'README.md') -Raw
-$agentsText = Get-Content -LiteralPath (Join-Path $repoRoot 'AGENTS.md') -Raw
-$copilotText = Get-Content -LiteralPath (Join-Path $repoRoot '.github\copilot-instructions.md') -Raw
-$worldRulesText = Get-Content -LiteralPath (Join-Path $repoRoot '.github\instructions\world-rules.instructions.md') -Raw
+$canonicalDaoText = Get-Content -LiteralPath (Join-Path $repoRoot '.copilot\instructions\dao.instructions.md') -Raw
+$copilotEntryText = Get-Content -LiteralPath (Join-Path $repoRoot '.copilot\copilot-instructions.md') -Raw
+$canonicalShuText = Get-Content -LiteralPath (Join-Path $repoRoot '.copilot\instructions\shu.instructions.md') -Raw
 
 # Entry/reference checks (minimal and non-duplicative).
-Assert-Contains -Text $readmeText -Pattern 'AGENTS\.md' -ErrorMessage "README missing 'AGENTS.md' entry link"
-Assert-Contains -Text $readmeText -Pattern 'world-rules\.instructions\.md' -ErrorMessage 'README missing world-rules entry link'
-Assert-Contains -Text $readmeText -Pattern '\.github\\copilot-instructions\.md' -ErrorMessage 'README missing copilot-instructions entry link'
+Assert-Contains -Text $readmeText -Pattern '\.copilot\\instructions\\' -ErrorMessage 'README missing canonical instructions directory reference'
+Assert-Contains -Text $readmeText -Pattern '\.copilot\\copilot-instructions\.md' -ErrorMessage 'README missing .copilot\copilot-instructions.md entry link'
+Assert-Contains -Text $readmeText -Pattern '\.copilot\\instructions\\dao\.instructions\.md' -ErrorMessage 'README missing canonical dao path reference'
+Assert-Contains -Text $readmeText -Pattern '\.copilot\\instructions\\shu\.instructions\.md' -ErrorMessage 'README missing canonical shu path reference'
+Assert-NotContains -Text $readmeText -Pattern '\.github\\instructions\\world-rules\.instructions\.md|\.github\\copilot-instructions\.md' -ErrorMessage 'README should not reference .github compatibility shim paths'
+Assert-NotContains -Text $readmeText -Pattern '\.copilot\\governance\\' -ErrorMessage 'README should not reference deprecated .copilot\governance path'
 
-Assert-Contains -Text $copilotText -Pattern 'AGENTS\.md' -ErrorMessage "copilot-instructions missing 'AGENTS.md' load reference"
-Assert-Contains -Text $copilotText -Pattern 'world-rules\.instructions\.md' -ErrorMessage 'copilot-instructions missing world-rules load reference'
+Assert-Contains -Text $copilotEntryText -Pattern '\.copilot[\\/]+instructions[\\/]+dao\.instructions\.md' -ErrorMessage '.copilot\copilot-instructions missing canonical dao load reference'
+Assert-Contains -Text $copilotEntryText -Pattern '\.copilot[\\/]+instructions[\\/]+shu\.instructions\.md' -ErrorMessage '.copilot\copilot-instructions missing canonical shu load reference'
 
-# Key governance anchors stay in canonical sources (AGENTS + world-rules).
-$governanceText = @($agentsText, $worldRulesText) -join "`n"
+# Key governance anchors stay in canonical sources (dao + shu).
+$governanceText = @($canonicalDaoText, $canonicalShuText) -join "`n"
 Assert-Contains -Text $governanceText -Pattern 'Draft\s*->\s*Trial\s*->\s*Active\s*->\s*Deprecated\s*->\s*Retired' -ErrorMessage 'Lifecycle anchor missing in governance docs'
 Assert-Contains -Text $governanceText -Pattern 'owner.+Main approval|Main approval.+owner' -ErrorMessage 'Gate anchor missing (owner/Main approval)'
 Assert-Contains -Text $governanceText -Pattern 'rollback' -ErrorMessage "Governance docs missing 'rollback' anchor"
 Assert-Contains -Text $governanceText -Pattern 'fail-close' -ErrorMessage "Governance docs missing 'fail-close' anchor"
 
 foreach ($source in @('web', 'wiki-db', 'mcp', 'cli')) {
-  Assert-Contains -Text $worldRulesText -Pattern ([Regex]::Escape($source)) -ErrorMessage "world-rules missing dynamic source '$source'"
+  Assert-Contains -Text $canonicalShuText -Pattern ([Regex]::Escape($source)) -ErrorMessage "shu rules missing dynamic source '$source'"
 }
 
 if ($errors.Count -gt 0) {
@@ -70,5 +101,5 @@ if ($errors.Count -gt 0) {
   exit 1
 }
 
-Write-Host 'Validation PASSED: minimal Dao+Shu references and anchors are present.' -ForegroundColor Green
+Write-Host 'Validation PASSED: canonical instruction paths and anchors are present.' -ForegroundColor Green
 exit 0

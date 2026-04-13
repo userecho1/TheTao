@@ -16,7 +16,7 @@
 - 交接最小包：目标、当前状态、证据、风险、回滚/降级状态、下一步。
 
 ## 3) 冲突优先级（MUST）
-- 高→低：安全/平台硬约束 > `AGENTS.md` > `.github\instructions\world-rules.instructions.md` > Main Agent 指令 > Sub-agent 自主策略。
+- 高→低：安全/平台硬约束 > `.copilot\instructions\dao.instructions.md` > `.copilot\instructions\shu.instructions.md` > Main Agent 指令 > Sub-agent 自主策略。
 
 ## 4) 治理控制（MUST）
 - 问责到人：每项执行与工件必须有唯一 `owner`；Main Agent 负最终责任。

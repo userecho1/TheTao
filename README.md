@@ -99,7 +99,7 @@ MCP（Model Context Protocol）可无缝扩展工具能力。配置方式：
 
 | 本仓库 | 用户级 |
 |--------|--------|
-| `.copilot/copilot-instructions.md` | `~/.copilot/copilot-instructions.md` |
+| `.copilot/copilot-instructions.md` | `~/.copilot/copilot-instructions.md` (vscode:  C:\Users\user\AppData\Roaming\Code\User\prompts)|
 | `.copilot/agents/*.agent.md` | `~/.copilot/agents/*.agent.md` |
 | `.copilot/skills/*/SKILL.md` | `~/.copilot/skills/*/SKILL.md` |
 

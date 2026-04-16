@@ -29,12 +29,13 @@ Wiki root: `D:\resource\llm-wiki-agent`
    ## Summary / Key Claims / Key Quotes / Connections / Contradictions
    ```
 6. Update `wiki/index.md`, revise `wiki/overview.md` if warranted
-7. Create/update entity pages (`wiki/entities/TitleCase.md`) — frontmatter uses `sources: [<slug>]`, `last_updated`
-8. Create/update concept pages (`wiki/concepts/TitleCase.md`) — frontmatter uses `sources: [<slug>]`, `last_updated`
+7. Create/update entity pages (`wiki/entities/TitleCase.md`) — frontmatter: `title`, `type: entity`, `tags`, `sources: [<slug>]`, `last_updated`
+8. Create/update concept pages (`wiki/concepts/TitleCase.md`) — frontmatter: `title`, `type: concept`, `tags`, `sources: [<slug>]`, `last_updated`
 9. Flag contradictions with existing content
 10. Log `## [YYYY-MM-DD] ingest | <Title>` to `wiki/log.md`
 11. Inbox file → move `processing/ → raw/archived/`
 12. Log `## [YYYY-MM-DD] archive | <filename>` to `wiki/log.md`
+13. If current workspace has `/memories/repo/`, update `/memories/repo/wiki-refs.md` with new/updated wiki page links
 
 ## Rules
 - Upsert only — same slug updates in place, no duplicates

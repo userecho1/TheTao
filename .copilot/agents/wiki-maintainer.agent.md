@@ -26,10 +26,13 @@ graph/{graph.json,graph.html}
 ```
 
 ## Shared Conventions
-- Page frontmatter: `title`, `type`, `tags`, `last_updated` (all pages); `source_file` (source pages); `sources` (entity/concept pages)
+- Content directories (graph scope): `sources/`, `entities/`, `concepts/`, `syntheses/`
+- Infra files (invisible to graph): `index.md`, `log.md`, `overview.md`, `lint-report.md`
+- Page frontmatter: `title`, `type`, `tags`, `last_updated` (all content pages); `source_file` (source pages); `sources` (entity/concept/synthesis pages)
+- Page types: `source`, `entity`, `concept`, `synthesis`
 - Wikilinks: `[[PageName]]`
-- Source slugs: `kebab-case`; Entity/Concept pages: `TitleCase.md`
-- Log format: `## [YYYY-MM-DD] <operation> | <detail>` — append to `wiki/log.md`
+- Source slugs: `kebab-case`; Entity/Concept pages: `TitleCase.md`; Synthesis slugs: `kebab-case` from question keywords
+- Log format: `## [YYYY-MM-DD] <operation> | <detail>` — append to `wiki/log.md`; written only on confirmed writes
 - Wiki content pages: upsert (same slug updates in place)
 - Generated output (graph): overwrite on rebuild
 

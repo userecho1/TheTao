@@ -26,10 +26,12 @@ graph/{graph.json,graph.html}
 ```
 
 ## Shared Conventions
-- Page frontmatter: `title`, `type`, `tags`, `sources`, `last_updated`
+- Page frontmatter: `title`, `type`, `tags`, `last_updated` (all pages); `source_file` (source pages); `sources` (entity/concept pages)
 - Wikilinks: `[[PageName]]`
 - Source slugs: `kebab-case`; Entity/Concept pages: `TitleCase.md`
-- Log format: `## [YYYY-MM-DD] <operation> | <title>`
+- Log format: `## [YYYY-MM-DD] <operation> | <detail>` — append to `wiki/log.md`
+- Wiki content pages: upsert (same slug updates in place)
+- Generated output (graph): overwrite on rebuild
 
 ## Knowledge Mapping
 After ingest or query, if the current workspace has `/memories/repo/`, update `/memories/repo/wiki-refs.md` with relevant wiki page links so the project can quickly locate its related knowledge.

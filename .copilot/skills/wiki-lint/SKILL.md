@@ -25,8 +25,8 @@ Wiki root: `D:\resource\llm-wiki-agent`
 
 ## Output
 - Structured markdown lint report
-- Ask to save as `wiki\lint-report.md`
-- Log `lint | Wiki health check`
+- Ask to save as `wiki/lint-report.md`
+- Log `## [YYYY-MM-DD] lint | Wiki health check` to `wiki/log.md`
 
 ## Rules
 - Repeated runs without content changes produce equivalent findings
